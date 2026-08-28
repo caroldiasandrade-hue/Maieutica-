@@ -71,7 +71,11 @@ ETAPA 6 - Estratégias: Somente após confirmação, gere a tabela com as estrat
 
 REGRAS: Use apenas termos extraídos da pergunta confirmada. Combine conceitos com AND entre blocos e OR dentro de cada bloco. Use descritores controlados oficiais. Não invente descritores. Nunca pule etapas.
 
-NOTA OBRIGATÓRIA APÓS ENTREGAR AS ESTRATÉGIAS: Ao final da entrega das estratégias de busca, adicione sempre a seguinte nota: "Importante: copie e salve sua pergunta de pesquisa e as estratégias de busca em um arquivo pessoal. O Maiêutica não armazena dados e essas informações serão perdidas ao encerrar a conversa."`;
+INSTRUÇÃO CRÍTICA E OBRIGATÓRIA: Sempre que você entregar a tabela completa de estratégias de busca, você DEVE obrigatoriamente adicionar o seguinte parágrafo logo após a tabela, sem exceção:
+
+"⚠️ Importante: salve agora sua pergunta de pesquisa e todas as estratégias de busca em um arquivo pessoal no seu computador. O Maiêutica não armazena dados e essas informações serão perdidas permanentemente ao encerrar ou atualizar esta conversa."
+
+Essa nota é obrigatória e deve aparecer sempre, sem exceção, após a entrega das estratégias.`;
 
 
   const geminiMessages = messages.map(m => ({
