@@ -2,205 +2,386 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Maiêutica — Assistente de Pesquisa Bibliográfica</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Maiêutica — Sua pesquisa começa com uma conversa</title>
+<meta name="description" content="Um assistente de pesquisa bibliográfica que ajuda você a formular perguntas melhores na área da saúde.">
+<meta name="theme-color" content="#F3F4F6">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --azul: #1B2A4A; --verde: #4E9F87; --ouro: #D4A373;
-    --fundo: #F3F4F6; --branco: #ffffff; --cinza: #6B7280;
-    --cinza-claro: #E5E7EB; --chat-ia: #EBF5F1; --radius: 12px;
-  }
-  body { font-family: 'Inter', sans-serif; background: var(--fundo); color: var(--azul); min-height: 100vh; display: flex; flex-direction: column; }
-  #landing { display: flex; flex-direction: column; min-height: 100vh; }
-  header { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 2rem; background: var(--branco); border-bottom: 1px solid var(--cinza-claro); }
-  .logo { font-family: 'Lora', serif; font-size: 1.4rem; font-weight: 500; color: var(--azul); display: flex; align-items: center; gap: 10px; }
-  .logo-icon { width: 36px; height: 36px; background: var(--azul); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
-  .bases-badges { display: flex; gap: 6px; flex-wrap: wrap; }
-  .badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; background: var(--cinza-claro); color: var(--cinza); font-weight: 500; }
-  .hero { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem 2rem; text-align: center; }
-  .hero h1 { font-family: 'Lora', serif; font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 500; color: var(--azul); margin-bottom: 1.25rem; line-height: 1.1; }
-  .hero h1 span { color: var(--verde); }
-  .hero p { font-size: clamp(0.95rem, 2vw, 1.1rem); color: var(--cinza); max-width: 640px; line-height: 1.7; margin-bottom: 0.75rem; }
-  .hero .sub-filosofia { font-family: 'Lora', serif; font-style: italic; font-size: 1rem; color: var(--azul); opacity: 0.7; margin-bottom: 2.5rem; }
-  .input-hero-wrap { width: 100%; max-width: 640px; background: var(--branco); border: 1.5px solid var(--cinza-claro); border-radius: 16px; padding: 1rem 1.25rem; display: flex; gap: 10px; align-items: flex-end; margin-bottom: 1.5rem; transition: border-color 0.2s; }
-  .input-hero-wrap:focus-within { border-color: var(--verde); }
-  .input-hero-wrap textarea { flex: 1; border: none; outline: none; resize: none; font-family: 'Inter', sans-serif; font-size: 0.95rem; color: var(--azul); background: transparent; min-height: 48px; max-height: 120px; line-height: 1.5; }
-  .input-hero-wrap textarea::placeholder { color: var(--cinza); }
-  .btn-enviar { background: var(--ouro); color: var(--branco); border: none; border-radius: 10px; padding: 10px 20px; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: background 0.2s, transform 0.1s; white-space: nowrap; }
-  .btn-enviar:hover { background: #c49060; }
-  .btn-enviar:active { transform: scale(0.97); }
-  .starters { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; max-width: 700px; }
-  .starter-card { background: var(--branco); border: 1px solid var(--cinza-claro); border-radius: 10px; padding: 0.75rem 1rem; font-size: 0.85rem; color: var(--azul); cursor: pointer; transition: border-color 0.2s, background 0.2s; text-align: left; max-width: 220px; line-height: 1.4; }
-  .starter-card:hover { border-color: var(--verde); background: #f0faf7; }
-  #chat-view { display: none; flex-direction: column; height: 100vh; }
-  .chat-header { background: var(--azul); padding: 1rem 1.5rem; display: flex; align-items: center; gap: 12px; }
-  .chat-header .logo { color: var(--branco); font-size: 1.1rem; }
-  .chat-header .logo-icon { background: rgba(255,255,255,0.15); width: 30px; height: 30px; }
-  .chat-header-sub { font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-left: auto; }
-  .chat-messages { flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
-  .msg { display: flex; flex-direction: column; max-width: 78%; }
-  .msg.ia { align-self: flex-start; }
-  .msg.user { align-self: flex-end; }
-  .msg-bubble { padding: 0.875rem 1.125rem; border-radius: 0 var(--radius) var(--radius) var(--radius); font-size: 0.9rem; line-height: 1.65; white-space: pre-wrap; }
-  .msg.ia .msg-bubble { background: var(--chat-ia); color: var(--azul); border: 1px solid #c5e0d8; }
-  .msg.user .msg-bubble { background: var(--azul); color: var(--branco); border-radius: var(--radius) 0 var(--radius) var(--radius); }
-  .msg-time { font-size: 0.7rem; color: var(--cinza); margin-top: 4px; padding: 0 4px; }
-  .msg.user .msg-time { text-align: right; }
-  .typing-indicator { display: none; align-self: flex-start; background: var(--chat-ia); border: 1px solid #c5e0d8; border-radius: 0 var(--radius) var(--radius) var(--radius); padding: 0.875rem 1.125rem; font-size: 0.85rem; color: var(--cinza); font-style: italic; }
-  .typing-indicator.visible { display: block; }
-  .chat-input-area { padding: 1rem 1.5rem; background: var(--branco); border-top: 1px solid var(--cinza-claro); display: flex; gap: 10px; align-items: flex-end; }
-  .chat-input-area textarea { flex: 1; border: 1.5px solid var(--cinza-claro); border-radius: 10px; padding: 0.75rem 1rem; font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--azul); resize: none; outline: none; min-height: 44px; max-height: 120px; transition: border-color 0.2s; line-height: 1.5; }
-  .chat-input-area textarea:focus { border-color: var(--verde); }
-  .btn-send { background: var(--azul); color: var(--branco); border: none; border-radius: 10px; padding: 10px 18px; font-size: 0.9rem; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 6px; }
-  .btn-send:hover { background: #243660; }
-  .btn-send:disabled { background: var(--cinza-claro); color: var(--cinza); cursor: not-allowed; }
-  .copy-btn { background: none; border: 1px solid var(--cinza-claro); border-radius: 6px; padding: 3px 10px; font-size: 0.75rem; color: var(--cinza); cursor: pointer; margin-top: 4px; align-self: flex-start; transition: border-color 0.2s, color 0.2s; }
-  .copy-btn:hover { border-color: var(--verde); color: var(--verde); }
-  @media (max-width: 640px) {
-    header { padding: 1rem; flex-wrap: wrap; gap: 8px; }
-    .bases-badges { display: none; }
-    .hero { padding: 2.5rem 1.25rem; }
-    .starters { flex-direction: column; align-items: stretch; }
-    .starter-card { max-width: 100%; }
-    .msg { max-width: 90%; }
-    .chat-messages { padding: 1rem; }
-  }
+*, *::before, *::after { box-sizing: border-box; border-color: var(--border); }
+
+:root {
+  --background: #f3f4f6;
+  --foreground: #1b2a4a;
+  --muted: #e7e9ed;
+  --muted-foreground: #647086;
+  --border: #d9dde4;
+  --primary: #1b2a4a;
+  --primary-foreground: #f3f4f6;
+  --teal: #4e9f87;
+  --teal-soft: #dceee8;
+  --amber: #d4a373;
+  --white: #fff;
+  --radius: 0.75rem;
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Lora', serif;
+}
+
+html { background: var(--background); }
+body { margin: 0; background: var(--background); color: var(--foreground); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+button, textarea { font: inherit; }
+button { cursor: pointer; }
+
+.maieutica-app { min-height: 100vh; }
+
+/* HEADER */
+.site-header { height: 78px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 5vw; background: rgba(243,244,246,.92); }
+.brand { display: flex; align-items: center; gap: .65rem; font: 600 1.35rem var(--font-serif); color: var(--primary); text-decoration: none; }
+.brand-mark { width: 31px; height: 31px; border: 1.5px solid var(--teal); border-radius: 50%; color: var(--teal); display: grid; place-items: center; transform: rotate(-22deg); flex-shrink: 0; }
+.brand-mark svg { transform: rotate(22deg); }
+.brand-inverse { color: var(--white); }
+.brand-inverse .brand-mark { color: var(--amber); border-color: var(--amber); }
+.database-list { display: flex; gap: 1.2rem; color: var(--muted-foreground); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; }
+
+/* INTRO */
+.intro-shell { min-height: calc(100vh - 78px); display: flex; flex-direction: column; justify-content: space-between; padding: 9vh 8vw 2rem; }
+.hero { max-width: 900px; width: 100%; margin: 0 auto; }
+.eyebrow { display: flex; align-items: center; gap: .65rem; color: var(--teal); font-size: .7rem; font-weight: 700; letter-spacing: .14em; }
+.eyebrow-dot { width: 7px; height: 7px; background: var(--teal); border-radius: 50%; flex-shrink: 0; }
+h1 { margin: 1.4rem 0 1.5rem; font: 400 clamp(3rem, 6vw, 6rem)/1.02 var(--font-serif); letter-spacing: -.05em; color: var(--primary); text-align: center; }
+h1 em { color: var(--teal); font-style: italic; }
+.manifesto { max-width: 735px; margin: 0 auto 2rem; color: #526078; font: 1.05rem/1.7 var(--font-serif); text-align: justify; }
+.prompt-box { border: 1px solid var(--primary); background: var(--white); padding: 1rem; box-shadow: 7px 7px 0 var(--teal-soft); }
+.prompt-box textarea { border: 0; outline: 0; resize: none; width: 100%; color: var(--primary); background: transparent; min-height: 78px; font-size: 1rem; line-height: 1.6; }
+.prompt-box textarea::placeholder { color: #9ba4b2; }
+.prompt-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: .75rem; color: var(--muted-foreground); font-size: .72rem; margin-top: .75rem; }
+.start-button { display: flex; align-items: center; gap: .5rem; background: var(--amber); color: var(--primary); border: 0; padding: .75rem 1.2rem; font-weight: 700; font-size: .9rem; }
+.start-button:disabled { opacity: .5; cursor: not-allowed; }
+.shortcut-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; margin-top: 2rem; }
+.shortcut { text-align: left; background: transparent; border: 1px solid var(--border); padding: 1rem; color: var(--primary); display: flex; align-items: flex-start; gap: .7rem; min-height: 96px; font-size: .83rem; line-height: 1.45; transition: border-color .2s, transform .2s; flex-direction: column; justify-content: space-between; }
+.shortcut:hover { border-color: var(--teal); transform: translateY(-3px); }
+.shortcut-number { color: var(--teal); font: .75rem var(--font-serif); }
+.shortcut-arrow { color: var(--teal); align-self: flex-end; }
+.intro-foot { max-width: 900px; width: 100%; margin: 3rem auto 0; display: flex; justify-content: space-between; color: var(--muted-foreground); font-size: .72rem; letter-spacing: .04em; }
+.intro-foot span { display: flex; align-items: center; gap: .4rem; }
+
+/* CHAT */
+.chat-shell { min-height: 100vh; display: flex; flex-direction: column; background: var(--background); }
+.chat-header { min-height: 70px; padding: 0 5vw; display: flex; align-items: center; gap: 2rem; background: var(--primary); color: var(--white); }
+.chat-context { display: flex; align-items: center; gap: .45rem; color: #b8d9ce; font-size: .78rem; }
+.new-chat-btn { margin-left: auto; display: flex; align-items: center; gap: .4rem; border: 1px solid #62708a; color: var(--white); background: transparent; padding: .55rem .8rem; font-size: .72rem; }
+.thread { width: min(820px, 90vw); margin: 3rem auto 9rem; }
+.thread-intro { display: flex; align-items: center; gap: .8rem; color: var(--muted-foreground); font-size: .65rem; letter-spacing: .15em; margin-bottom: 2.5rem; }
+.thread-line { height: 1px; background: var(--border); flex: 1; }
+.message-row { margin-bottom: 2rem; max-width: 78%; }
+.message-row.user { margin-left: auto; text-align: right; }
+.message-label { color: var(--teal); font-size: .65rem; font-weight: 700; letter-spacing: .14em; margin-bottom: .45rem; }
+.message-row.user .message-label { color: var(--muted-foreground); }
+.message-bubble { display: inline-block; text-align: left; padding: 1rem 1.1rem; line-height: 1.65; font-size: .95rem; background: var(--teal-soft); color: var(--primary); white-space: pre-wrap; }
+.message-row.user .message-bubble { background: var(--primary); color: var(--white); }
+.copy-button { display: flex; align-items: center; gap: .35rem; border: 0; border-top: 1px solid #b9dacf; background: transparent; color: var(--teal); font-size: .68rem; padding: .7rem 0 0; margin-top: .8rem; width: 100%; }
+.thinking { color: var(--muted-foreground); font: italic .82rem var(--font-serif); display: flex; gap: .6rem; align-items: center; margin-bottom: 2rem; }
+.thinking-dots { display: flex; gap: 3px; }
+.thinking-dots i { width: 4px; height: 4px; border-radius: 50%; background: var(--teal); animation: blink 1s infinite; display: block; }
+.thinking-dots i:nth-child(2) { animation-delay: .15s; }
+.thinking-dots i:nth-child(3) { animation-delay: .3s; }
+@keyframes blink { 50% { opacity: .2; transform: translateY(-2px); } }
+.composer-wrap { position: fixed; bottom: 0; width: 100%; padding: .8rem 5vw 1rem; background: rgba(243,244,246,.96); border-top: 1px solid var(--border); }
+.composer { max-width: 820px; margin: auto; display: flex; align-items: flex-end; border: 1px solid var(--primary); background: var(--white); padding: .65rem .65rem .65rem 1rem; gap: .5rem; }
+.composer textarea { border: 0; outline: 0; resize: none; width: 100%; color: var(--primary); background: transparent; min-height: 38px; max-height: 120px; font-size: .95rem; line-height: 1.5; }
+.composer textarea::placeholder { color: #9ba4b2; }
+.composer-send { width: 38px; height: 38px; border: 0; display: grid; place-items: center; background: var(--amber); color: var(--primary); flex-shrink: 0; }
+.composer-send:disabled { opacity: .45; cursor: not-allowed; }
+.composer-wrap p { max-width: 820px; margin: .5rem auto 0; color: var(--muted-foreground); font-size: .68rem; text-align: center; }
+
+/* HIDDEN */
+.hidden { display: none !important; }
+
+/* RESPONSIVE */
+@media (max-width: 760px) {
+  .site-header { height: 68px; padding: 0 1.25rem; }
+  .database-list { display: none; }
+  .intro-shell { padding: 7vh 1.25rem 1.5rem; }
+  .manifesto { font-size: .96rem; }
+  .shortcut-grid { grid-template-columns: 1fr; }
+  .shortcut { min-height: auto; }
+  .prompt-footer span:first-child { display: none; }
+  .intro-foot { font-size: .65rem; }
+  .intro-foot span:last-child { display: none; }
+  .chat-header { padding: .8rem 1.25rem; gap: .75rem; }
+  .chat-context { display: none; }
+  .thread { width: calc(100% - 2.5rem); margin-top: 2rem; }
+  .message-row { max-width: 92%; }
+  .composer-wrap { padding-left: 1.25rem; padding-right: 1.25rem; }
+}
 </style>
 </head>
 <body>
-<div id="landing">
-  <header>
-    <div class="logo">
-      <div class="logo-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
-          <path d="M8 12c0-2.21 1.79-4 4-4s4 1.79 4 4-1.79 4-4 4"/>
-          <circle cx="12" cy="12" r="1.5" fill="white"/>
-        </svg>
+
+<div class="maieutica-app">
+
+  <!-- INTRO -->
+  <div id="intro-view">
+    <header class="site-header">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7c0 0-4-4-8-4S4 7 4 7"/><path d="M4 17c0 0 4 4 8 4s8-4 8-4"/><path d="M12 3v18"/><path d="M3 12h18"/></svg>
+        </div>
+        Maiêutica
       </div>
-      Maiêutica
-    </div>
-    <div class="bases-badges">
-      <span class="badge">PubMed</span>
-      <span class="badge">Embase</span>
-      <span class="badge">Web of Science</span>
-      <span class="badge">LILACS</span>
-      <span class="badge">Scopus</span>
-      <span class="badge">PsycInfo</span>
-    </div>
-  </header>
-  <div class="hero">
-    <h1>Sua pesquisa começa<br>com uma <span>conversa</span></h1>
-    <p>O que antes levava dias numa biblioteca agora começa com uma ideia. O Maiêutica transforma seu pensamento em estratégias de busca científica prontas para uso.</p>
-    <p class="sub-filosofia">"Inspirado no método socrático — extraindo o conhecimento que já existe em você."</p>
-    <div class="input-hero-wrap">
-      <textarea id="hero-input" placeholder="Descreva sua ideia, tema de interesse ou incerteza clínica..." rows="2"></textarea>
-      <button class="btn-enviar" onclick="iniciarChat()">Começar →</button>
-    </div>
-    <div class="starters">
-      <div class="starter-card" onclick="usarStarter(this)">Tenho um tema de intervenção clínica em enfermagem e preciso montar a busca.</div>
-      <div class="starter-card" onclick="usarStarter(this)">Quero fazer uma revisão de escopo sobre telessaúde e saúde mental.</div>
-      <div class="starter-card" onclick="usarStarter(this)">Não sei qual framework usar (PICO, PCC, SPIDER). Pode me ajudar?</div>
+      <div class="database-list">
+        <span>PubMed</span><span>Embase</span><span>Web of Science</span><span>LILACS</span><span>Scopus</span><span>PsycInfo</span>
+      </div>
+    </header>
+
+    <main class="intro-shell">
+      <section class="hero">
+        <div class="eyebrow">
+          <span class="eyebrow-dot"></span>
+          ASSISTENTE DE PESQUISA BIBLIOGRÁFICA
+        </div>
+        <h1>Sua pesquisa começa<br><em>com uma conversa.</em></h1>
+        <p class="manifesto">Sócrates não ensinava. Ele perguntava. Acreditava que o conhecimento verdadeiro já habitava cada pessoa, esperando ser descoberto. Seu método ficou conhecido como maiêutica, a arte de fazer nascer ideias por meio de perguntas, em referência à profissão de sua mãe, Fenarete, que era parteira. Séculos depois, essa mesma filosofia chega à pesquisa científica. O Maiêutica não faz sua busca por você. Ele faz as perguntas certas até que sua pergunta de pesquisa e suas estratégias de busca nasçam do que você já sabe.</p>
+
+        <div class="prompt-box">
+          <textarea id="hero-input" placeholder="Descreva sua ideia, tema de interesse ou incerteza clínica..." rows="3"></textarea>
+          <div class="prompt-footer">
+            <span>Shift + Enter para nova linha</span>
+            <button class="start-button" id="hero-btn" onclick="iniciarChat()" disabled>
+              Começar
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="shortcut-grid">
+          <button class="shortcut" onclick="usarShortcut(this)">
+            <span class="shortcut-number">01</span>
+            <span>Já tenho um tema, mas ainda não sei formular a pergunta de pesquisa.</span>
+            <span class="shortcut-arrow">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+            </span>
+          </button>
+          <button class="shortcut" onclick="usarShortcut(this)">
+            <span class="shortcut-number">02</span>
+            <span>Já tenho o tema e a pergunta de pesquisa formulada.</span>
+            <span class="shortcut-arrow">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+            </span>
+          </button>
+          <button class="shortcut" onclick="usarShortcut(this)">
+            <span class="shortcut-number">03</span>
+            <span>Já tenho tema, pergunta e tipo de revisão definidos.</span>
+            <span class="shortcut-arrow">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+            </span>
+          </button>
+        </div>
+      </section>
+
+      <div class="intro-foot">
+        <span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          Feito para quem pesquisa na saúde
+        </span>
+        <span>Uma pergunta de cada vez</span>
+      </div>
+    </main>
+  </div>
+
+  <!-- CHAT -->
+  <div id="chat-view" class="hidden">
+    <div class="chat-shell">
+      <header class="chat-header">
+        <div class="brand brand-inverse">
+          <div class="brand-mark">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7c0 0-4-4-8-4S4 7 4 7"/><path d="M4 17c0 0 4 4 8 4s8-4 8-4"/><path d="M12 3v18"/><path d="M3 12h18"/></svg>
+          </div>
+          Maiêutica
+        </div>
+        <div class="chat-context">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Assistente de Pesquisa Bibliográfica
+        </div>
+        <button class="new-chat-btn" onclick="novaConversa()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.29"/></svg>
+          Nova conversa
+        </button>
+      </header>
+
+      <section class="thread" id="thread" aria-live="polite">
+        <div class="thread-intro">
+          <span class="thread-line"></span>
+          <span>CONVERSA 01 · FORMULAÇÃO</span>
+          <span class="thread-line"></span>
+        </div>
+      </section>
+
+      <div class="composer-wrap">
+        <div class="composer">
+          <textarea id="chat-input" placeholder="Continue a conversa..." rows="1"></textarea>
+          <button class="composer-send" id="chat-btn" onclick="enviarMensagem()" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+          </button>
+        </div>
+        <p>Maiêutica faz perguntas para ajudar você a pensar. Você decide os caminhos da sua pesquisa.</p>
+      </div>
     </div>
   </div>
+
 </div>
-<div id="chat-view">
-  <div class="chat-header">
-    <div class="logo-icon">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
-        <path d="M8 12c0-2.21 1.79-4 4-4s4 1.79 4 4-1.79 4-4 4"/>
-        <circle cx="12" cy="12" r="1.5" fill="white"/>
-      </svg>
-    </div>
-    <div class="logo">Maiêutica</div>
-    <span class="chat-header-sub">Assistente de Pesquisa Bibliográfica</span>
-  </div>
-  <div class="chat-messages" id="chat-messages">
-    <div class="typing-indicator" id="typing">Analisando framework metodológico...</div>
-  </div>
-  <div class="chat-input-area">
-    <textarea id="chat-input" placeholder="Digite sua resposta..." rows="1"></textarea>
-    <button class="btn-send" id="btn-send" onclick="enviarMensagem()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-    </button>
-  </div>
-</div>
+
 <script>
-  const messages = [];
-  const typingLabels = ['Analisando framework metodológico...','Mapeando vocabulário controlado (MeSH/DeCS)...','Estruturando a pergunta de pesquisa...','Verificando sintaxe das bases de dados...','Organizando os conceitos...'];
-  let typingInterval;
-  function iniciarChat(textoInicial) {
-    const input = document.getElementById('hero-input');
-    const texto = textoInicial || input.value.trim();
-    if (!texto) return;
-    document.getElementById('landing').style.display = 'none';
-    document.getElementById('chat-view').style.display = 'flex';
-    chamarAPI(texto);
+const messages = [];
+const thinkingLabels = [
+  'Analisando framework metodológico...',
+  'Mapeando vocabulário controlado MeSH/DeCS...',
+  'Estruturando a pergunta de pesquisa...',
+  'Verificando sintaxe das bases de dados...',
+  'Organizando os conceitos da sua pergunta...'
+];
+let thinkingInterval;
+let isLoading = false;
+
+// Enable/disable buttons based on input
+document.getElementById('hero-input').addEventListener('input', function() {
+  document.getElementById('hero-btn').disabled = !this.value.trim();
+});
+
+document.getElementById('hero-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (this.value.trim()) iniciarChat(); }
+});
+
+document.getElementById('chat-input').addEventListener('input', function() {
+  document.getElementById('chat-btn').disabled = !this.value.trim() || isLoading;
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+});
+
+document.getElementById('chat-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (this.value.trim() && !isLoading) enviarMensagem(); }
+});
+
+function usarShortcut(el) {
+  const texto = el.querySelector('span:nth-child(2)').innerText;
+  iniciarChat(texto);
+}
+
+function iniciarChat(textoInicial) {
+  const input = document.getElementById('hero-input');
+  const texto = textoInicial || input.value.trim();
+  if (!texto) return;
+  document.getElementById('intro-view').classList.add('hidden');
+  document.getElementById('chat-view').classList.remove('hidden');
+  chamarAPI(texto);
+}
+
+function novaConversa() {
+  messages.length = 0;
+  document.getElementById('thread').innerHTML = `
+    <div class="thread-intro">
+      <span class="thread-line"></span>
+      <span>CONVERSA 01 · FORMULAÇÃO</span>
+      <span class="thread-line"></span>
+    </div>`;
+  document.getElementById('intro-view').classList.remove('hidden');
+  document.getElementById('chat-view').classList.add('hidden');
+  document.getElementById('hero-input').value = '';
+  document.getElementById('hero-btn').disabled = true;
+}
+
+function addMsg(role, content) {
+  messages.push({ role, content });
+  const thread = document.getElementById('thread');
+  const row = document.createElement('div');
+  row.className = `message-row ${role === 'assistant' ? '' : 'user'}`;
+
+  const label = document.createElement('div');
+  label.className = 'message-label';
+  label.textContent = role === 'assistant' ? 'MAIÊUTICA' : 'VOCÊ';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'message-bubble';
+  bubble.textContent = content;
+
+  row.appendChild(label);
+  row.appendChild(bubble);
+
+  if (role === 'assistant') {
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'copy-button';
+    copyBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copiar`;
+    copyBtn.onclick = () => {
+      navigator.clipboard.writeText(content);
+      copyBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copiado`;
+      setTimeout(() => { copyBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copiar`; }, 1500);
+    };
+    row.appendChild(copyBtn);
   }
-  function usarStarter(el) {
-    document.getElementById('hero-input').value = el.innerText;
-    iniciarChat(el.innerText);
+
+  thread.appendChild(row);
+  thread.scrollTop = thread.scrollHeight;
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+function showThinking() {
+  const thread = document.getElementById('thread');
+  const div = document.createElement('div');
+  div.className = 'thinking';
+  div.id = 'thinking-indicator';
+  let i = 0;
+  div.innerHTML = `<span class="thinking-dots"><i></i><i></i><i></i></span><span id="thinking-text">${thinkingLabels[0]}</span>`;
+  thread.appendChild(div);
+  thinkingInterval = setInterval(() => {
+    i = (i + 1) % thinkingLabels.length;
+    const el = document.getElementById('thinking-text');
+    if (el) el.textContent = thinkingLabels[i];
+  }, 2000);
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+function hideThinking() {
+  clearInterval(thinkingInterval);
+  const el = document.getElementById('thinking-indicator');
+  if (el) el.remove();
+}
+
+async function chamarAPI(userText) {
+  isLoading = true;
+  addMsg('user', userText);
+  showThinking();
+  document.getElementById('chat-btn').disabled = true;
+
+  try {
+    const res = await fetch('/.netlify/functions/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages })
+    });
+    const data = await res.json();
+    hideThinking();
+    addMsg('assistant', data.text || 'Não foi possível gerar uma resposta. Tente novamente.');
+  } catch {
+    hideThinking();
+    addMsg('assistant', 'Ocorreu um erro ao se conectar. Verifique sua conexão e tente novamente.');
   }
-  function addMsg(role, content) {
-    messages.push({ role, content });
-    const container = document.getElementById('chat-messages');
-    const typing = document.getElementById('typing');
-    const wrap = document.createElement('div');
-    wrap.className = `msg ${role === 'assistant' ? 'ia' : 'user'}`;
-    const bubble = document.createElement('div');
-    bubble.className = 'msg-bubble';
-    bubble.textContent = content;
-    const time = document.createElement('div');
-    time.className = 'msg-time';
-    time.textContent = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-    wrap.appendChild(bubble);
-    wrap.appendChild(time);
-    if (role === 'assistant') {
-      const copyBtn = document.createElement('button');
-      copyBtn.className = 'copy-btn';
-      copyBtn.textContent = 'Copiar';
-      copyBtn.onclick = () => { navigator.clipboard.writeText(content); copyBtn.textContent = 'Copiado!'; setTimeout(() => copyBtn.textContent = 'Copiar', 2000); };
-      wrap.appendChild(copyBtn);
-    }
-    container.insertBefore(wrap, typing);
-    container.scrollTop = container.scrollHeight;
-  }
-  function showTyping() {
-    const el = document.getElementById('typing');
-    el.classList.add('visible');
-    let i = 0;
-    typingInterval = setInterval(() => { i = (i + 1) % typingLabels.length; el.textContent = typingLabels[i]; }, 2000);
-  }
-  function hideTyping() { clearInterval(typingInterval); document.getElementById('typing').classList.remove('visible'); }
-  async function chamarAPI(userText) {
-    addMsg('user', userText);
-    showTyping();
-    document.getElementById('btn-send').disabled = true;
-    try {
-      const res = await fetch('/.netlify/functions/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages }) });
-      const data = await res.json();
-      hideTyping();
-      addMsg('assistant', data.text || 'Não foi possível gerar uma resposta.');
-    } catch { hideTyping(); addMsg('assistant', 'Ocorreu um erro ao se conectar. Verifique sua conexão e tente novamente.'); }
-    document.getElementById('btn-send').disabled = false;
-  }
-  function enviarMensagem() {
-    const input = document.getElementById('chat-input');
-    const texto = input.value.trim();
-    if (!texto) return;
-    input.value = '';
-    input.style.height = 'auto';
-    chamarAPI(texto);
-  }
-  document.getElementById('hero-input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); iniciarChat(); } });
-  document.getElementById('chat-input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); enviarMensagem(); } });
-  document.getElementById('chat-input').addEventListener('input', function() { this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 120) + 'px'; });
-  window.addEventListener('load', () => { const landing = document.getElementById('landing'); landing.style.opacity = '0'; landing.style.transition = 'opacity 0.4s'; setTimeout(() => landing.style.opacity = '1', 50); });
+
+  isLoading = false;
+  const chatInput = document.getElementById('chat-input');
+  document.getElementById('chat-btn').disabled = !chatInput.value.trim();
+}
+
+function enviarMensagem() {
+  const input = document.getElementById('chat-input');
+  const texto = input.value.trim();
+  if (!texto || isLoading) return;
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('chat-btn').disabled = true;
+  chamarAPI(texto);
+}
 </script>
 </body>
 </html>
