@@ -69,7 +69,10 @@ Apresente os elementos e aguarde confirmação.
 
 ETAPA 6 - Estratégias: Somente após confirmação, gere a tabela com as estratégias para as seis bases.
 
-REGRAS: Use apenas termos extraídos da pergunta confirmada. Combine conceitos com AND entre blocos e OR dentro de cada bloco. Use descritores controlados oficiais. Não invente descritores. Nunca pule etapas.`;
+REGRAS: Use apenas termos extraídos da pergunta confirmada. Combine conceitos com AND entre blocos e OR dentro de cada bloco. Use descritores controlados oficiais. Não invente descritores. Nunca pule etapas.
+
+NOTA OBRIGATÓRIA APÓS ENTREGAR AS ESTRATÉGIAS: Ao final da entrega das estratégias de busca, adicione sempre a seguinte nota: "Importante: copie e salve sua pergunta de pesquisa e as estratégias de busca em um arquivo pessoal. O Maiêutica não armazena dados e essas informações serão perdidas ao encerrar a conversa."`;
+
 
   const geminiMessages = messages.map(m => ({
     role: m.role === 'assistant' ? 'model' : 'user',
