@@ -264,6 +264,22 @@ document.getElementById('chat-input').addEventListener('keydown', function(e) {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (this.value.trim() && !isLoading) enviarMensagem(); }
 });
 
+function renderMarkdown(text) {
+  return text
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/^### (.+)$/gm, '<strong>$1</strong>')
+    .replace(/^## (.+)$/gm, '<strong>$1</strong>')
+    .replace(/^# (.+)$/gm, '<strong>$1</strong>')
+    .replace(/^> (.+)$/gm, '<blockquote style="border-left:3px solid var(--teal);padding-left:0.75rem;margin:0.5rem 0;font-style:italic;">$1</blockquote>')
+    .replace(/^\* (.+)$/gm, '<li>$1</li>')
+    .replace(/^- (.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>)/gs, '<ul style="padding-left:1.2rem;margin:0.5rem 0;">$1</ul>')
+    .replace(/\n\n/g, '<br><br>')
+    .replace(/\n/g, '<br>');
+}
+
 function usarShortcut(el) {
   const texto = el.querySelector('span:nth-child(2)').innerText;
   iniciarChat(texto);
@@ -304,7 +320,7 @@ function addMsg(role, content) {
 
   const bubble = document.createElement('div');
   bubble.className = 'message-bubble';
-  bubble.textContent = content;
+  bubble.innerHTML = renderMarkdown(content);
 
   row.appendChild(label);
   row.appendChild(bubble);
@@ -385,3 +401,4 @@ function enviarMensagem() {
 </script>
 </body>
 </html>
+
